@@ -1,13 +1,32 @@
-/* Keep basic body resets and font smoothing */
+/* @tailwind base;
+@tailwind components;
+@tailwind utilities;
+/*  
+/* @font-face {
+   font-family: "neuropol";
+   src: url(./utils/fonts/NEUROPOL.ttf) format("truetype");
+} */
+
 body {
    margin: 0;
    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu",
-      "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif; /* MUI will override this, but keep as fallback */
+      "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", "sans-serif", "neurolpol";
    -webkit-font-smoothing: antialiased;
    -moz-osx-font-smoothing: grayscale;
-   /* Removed fixed height/width */
-   /* Removed background-color - Handled by MUI Theme/CssBaseline */
+   /* position: relative; Ensure the body itself is positioned */
+   /* min-height: 100vh; Ensure the body covers at least the viewport height */
+   /* overflow: hidden; Prevent scrolling from affecting the background */
 }
 
-/* Removed default styles for a, h1, button, and @media prefers-color-scheme */
-/* Let MUI ThemeProvider and CssBaseline handle these */
+code {
+   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
+}
+
+body::before {
+   top: 0;
+   left: 0;
+   width: 100%;
+   height: 100%;
+   z-index: -1; /* Ensure the image stays behind the content */
+   transform: scale(-1, -1); /* Mirror the image vertically and horizontally */
+}
