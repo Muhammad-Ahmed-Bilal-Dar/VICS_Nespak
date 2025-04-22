@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Back from "../utils/back.jpg";
 import { 
-  Container, 
   Box, 
   Card, 
   Typography, 
@@ -10,155 +10,147 @@ import {
   CircularProgress,
   Alert 
 } from '@mui/material';
-// import { useLoginMutation } from '../features/auth/authApiSlice'; // Temporarily unused
 import { useDispatch } from 'react-redux';
-import { setCredentials } from '../features/auth/authSlice'; // Import the action
+import { setCredentials } from '../features/auth/authSlice';
 
 const LoginPage: React.FC = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [localError, setLocalError] = useState<string | null>(null); // Added for demo error
-  const navigate = useNavigate(); // Now used
+  const [localError, setLocalError] = useState<string | null>(null);
+  const navigate = useNavigate();
   const dispatch = useDispatch();
-  
-  // Temporarily disable RTK Query hook for demo login
-  // const [login, { isLoading, error }] = useLoginMutation(); 
-  const isLoading = false; // Simulate no loading for demo
-  // const error = null; // Use localError instead
+  const isLoading = false;
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setLocalError(null); // Clear previous demo errors
+    setLocalError(null);
 
-    // --- Demo Login Logic --- 
     if (username === 'admin' && password === 'admin') {
-      console.log('Demo admin login successful');
-      const mockUserData = { 
-        user: { username: 'admin', role: 'admin' as ('admin' | 'Station') }, // Mock admin user
-        token: 'fake-admin-token' // Mock token
-      };
-      dispatch(setCredentials(mockUserData)); 
-      setUsername('');
-      setPassword('');
-      navigate('/dashboard'); 
-    } else if (username === 'station' && password === 'station') { // Added a demo station user
-        console.log('Demo station login successful');
-        const mockUserData = { 
-          user: { username: 'station', role: 'Station' as ('admin' | 'Station') }, // Mock station user
-          token: 'fake-station-token' // Mock token
-        };
-        dispatch(setCredentials(mockUserData)); 
-        setUsername('');
-        setPassword('');
-        navigate('/dashboard'); 
+      dispatch(setCredentials({ 
+        user: { username: 'admin', role: 'admin' },
+        token: 'fake-admin-token' 
+      }));
+      navigate('/dashboard');
+    } else if (username === 'station' && password === 'station') {
+      dispatch(setCredentials({ 
+        user: { username: 'station', role: 'Station' },
+        token: 'fake-station-token' 
+      }));
+      navigate('/dashboard');
     } else {
-      console.error('Demo login failed: Invalid credentials');
-      setLocalError('Invalid demo credentials. Use admin/admin or station/station.'); // Set demo error
+      setLocalError('Invalid demo credentials. Use admin/admin or station/station.');
     }
-    // --- End Demo Login Logic ---
-
-    /* --- Original API Call Logic (Commented Out) ---
-    try {
-      const userData = await login({ username, password }).unwrap(); 
-      dispatch(setCredentials(userData)); 
-      setUsername('');
-      setPassword('');
-      navigate('/dashboard'); 
-    } catch (err) {
-      console.error('Failed to login: ', err);
-      // Error determination logic below would use the 'error' from useLoginMutation
-    }
-    */
   };
 
-  // Determine the error message (prioritize localError for demo)
-  const errorMessage: string | null = localError;
-  /* // Original error logic using RTK Query's error object (Commented Out)
-  if (!errorMessage && error) { // Only check RTK error if no localError
-    if ('status' in error) {
-      const errMsg = 'error' in error ? error.error : JSON.stringify(error.data);
-      errorMessage = `Login Failed: ${errMsg}`;
-    } else if ('message' in error) {
-      errorMessage = `Login Failed: ${error.message}`;
-    } else {
-        errorMessage = 'Login Failed: An unknown error occurred';
-    }
-  }
-  */
-
   return (
-    <Container 
-      component="main" 
-      maxWidth="xs" 
-      sx={{ 
-        display: 'flex', 
-        alignItems: 'center', 
-        justifyContent: 'center', 
-        minHeight: '100vh' 
+    <Box
+      sx={{
+        width: '100vw',
+        height: '100vh',
+        backgroundImage: `url(${Back})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
       }}
     >
       <Card
         sx={{
           padding: 4,
+          width: { xs: '90%', sm: '400px' },
+          backgroundColor: 'rgba(255, 255, 255, 0.0)',
+          backdropFilter: 'blur(8px)',
+          borderRadius: 3,
+          boxShadow: 5,
+          border: '1px solid rgba(255, 255, 255, 0.3)',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          // Glassmorphism styles
-          backgroundColor: 'rgba(255, 255, 255, 0.1)', // Semi-transparent background
-          backdropFilter: 'blur(10px)', // Blur effect
-          border: '1px solid rgba(255, 255, 255, 0.2)', // Subtle border
-          borderRadius: 2, // Slightly rounded corners
-          boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)', // Soft shadow
         }}
       >
-        <Typography component="h1" variant="h5" sx={{ mb: 2 }}>
-          Sign In (Demo Mode)
+        <Typography 
+          component="h1" 
+          variant="h5" 
+          sx={{ 
+            mb: 3, 
+            fontWeight: 'bold', 
+            color: 'white', 
+            textAlign: 'center' 
+          }}
+        >
+          Vehicle Inspection & Certification System
         </Typography>
-        <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            id="username"
-            label="Username (admin or station)"
-            name="username"
-            autoComplete="username"
-            autoFocus
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            disabled={isLoading}
-          />
+
+        <Box component="form" onSubmit={handleSubmit} sx={{ width: '100%' }}>
+        <TextField
+  margin="normal"
+  required
+  fullWidth
+  id="username"
+  label="Username"
+  name="username"
+  autoComplete="username"
+  autoFocus
+  value={username}
+  onChange={(e) => setUsername(e.target.value)}
+  disabled={isLoading}
+  InputProps={{
+    style: { color: 'white' },
+    sx: {
+      '& .MuiOutlinedInput-notchedOutline': {
+        borderColor: 'white',
+      },
+      '&:hover .MuiOutlinedInput-notchedOutline': {
+        borderColor: 'white',
+      },
+      '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+        borderColor: 'white',
+      },
+    }
+  }}
+  InputLabelProps={{
+    style: { color: 'white' },
+  }}
+/>
           <TextField
             margin="normal"
             required
             fullWidth
             name="password"
-            label="Password (admin or station)"
+            label="Password"
             type="password"
             id="password"
             autoComplete="current-password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             disabled={isLoading}
+            InputProps={{
+              style: { color: 'white' },
+            }}
+            InputLabelProps={{
+              style: { color: 'white' },
+            }}
           />
-          {errorMessage && (
-              <Alert severity="error" sx={{ width: '100%', mt: 2 }}>
-                  {errorMessage}
-              </Alert>
+          {localError && (
+            <Alert severity="error" sx={{ width: '100%', mt: 2 }}>
+              {localError}
+            </Alert>
           )}
           <Button
             type="submit"
             fullWidth
             variant="contained"
-            sx={{ mt: 3, mb: 2 }}
+            sx={{ mt: 3 }}
             disabled={isLoading}
           >
             {isLoading ? <CircularProgress size={24} /> : 'Sign In'}
           </Button>
         </Box>
       </Card>
-    </Container>
+    </Box>
   );
 };
 
-export default LoginPage; 
+export default LoginPage;

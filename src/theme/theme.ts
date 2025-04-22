@@ -3,17 +3,21 @@ import { createTheme } from '@mui/material/styles';
 // Create a theme instance.
 const theme = createTheme({
   palette: {
-    mode: 'dark', // Start with a dark theme, can be configured
+    mode: 'light', // Switch to light mode
     primary: {
-      main: '#90caf9',
+      main: '#00a76f', // Set primary color to green shade
     },
     secondary: {
-      main: '#f48fb1',
+      main: '#dc004e', // Kept secondary as red for contrast
     },
     background: {
-      default: '#121212',
-      paper: '#1e1e1e',
+      default: '#fafafa', // Off-white background
+      paper: '#ffffff', // White for paper elements like Card
     },
+    text: {
+        primary: '#212121', // Dark grey/black for primary text
+        secondary: '#757575', // Lighter grey for secondary text
+    }
   },
   typography: {
     fontFamily: 'Roboto, Arial, sans-serif',
