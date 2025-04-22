@@ -1,21 +1,18 @@
-import { Provider } from 'react-redux';
 import { BrowserRouter as Router } from 'react-router-dom';
-import { ThemeProvider, CssBaseline } from '@mui/material';
-import { store } from './app/store';
-import theme from './theme/theme';
-import AppRoutes from './routes/AppRoutes'; // We will create this next
+import { ThemeWrapper } from './theme';
+import { AuthProvider } from './context/AuthContext';
+import AppRoutes from './routes/AppRoutes';
 import './App.css';
 
 function App() {
   return (
-    <Provider store={store}>
-      <ThemeProvider theme={theme}>
-        <CssBaseline /> {/* Ensures baseline CSS resets and applies background color */} 
+    <ThemeWrapper>
+      <AuthProvider>
         <Router>
-          <AppRoutes /> {/* Component defining all application routes */} 
+          <AppRoutes />
         </Router>
-      </ThemeProvider>
-    </Provider>
+      </AuthProvider>
+    </ThemeWrapper>
   );
 }
 

@@ -1,40 +1,54 @@
-import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
-import LoginPage from '../pages/LoginPage'; // Import the LoginPage component
-import DashboardPage from '../pages/DashboardPage'; // Import DashboardPage
-import ProtectedRoute from './ProtectedRoute'; // Import ProtectedRoute
-import { useSelector } from 'react-redux';
-import { selectIsAuthenticated } from '../features/auth/authSlice';
-// Import page components here when created
-// import DashboardPage from '../pages/DashboardPage';
-// import ProtectedRoute from './ProtectedRoute'; // We will create this later for role-based access
+import { Suspense, lazy } from 'react';
+import ProtectedRoute from '../components/auth/ProtectedRoute';
+import LoadingScreen from '../components/common/LoadingScreen';
 
-const AppRoutes: React.FC = () => {
-  const isAuthenticated = useSelector(selectIsAuthenticated);
+// Lazy-loaded components
+const LoginPage = lazy(() => import('../pages/auth/LoginPage'));
+const AdminDashboard = lazy(() => import('../pages/admin/Dashboard'));
+const StationDashboard = lazy(() => import('../pages/station/Dashboard'));
+const NotFoundPage = lazy(() => import('../pages/NotFoundPage'));
+const UnauthorizedPage = lazy(() => import('../pages/UnauthorizedPage'));
 
+/**
+ * Application routes component
+ * Defines all routes and their access requirements
+ */
+const AppRoutes = () => {
   return (
-    <Routes>
-      {/* Public Route */}
-      <Route path="/login" element={!isAuthenticated ? <LoginPage /> : <Navigate to="/dashboard" replace />} /> 
-
-      {/* Protected Route */} 
-      <Route 
-        path="/dashboard"
-        element={
-          <ProtectedRoute allowedRoles={['admin', 'Station']}> 
-            <DashboardPage />
-          </ProtectedRoute>
-        }
-      />
-      {/* Remove the old placeholder dashboard route */}
-      {/* <Route path="/dashboard" element={<div>Dashboard Placeholder</div>} /> */}
-
-      {/* Default route: redirect based on auth status */}
-      <Route 
-        path="*" 
-        element={<Navigate to={isAuthenticated ? "/dashboard" : "/login"} replace />} 
-      /> 
-    </Routes>
+    <Suspense fallback={<LoadingScreen />}>
+      <Routes>
+        {/* Public routes */}
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/unauthorized" element={<UnauthorizedPage />} />
+        
+        {/* Admin routes */}
+        <Route 
+          path="/admin/dashboard" 
+          element={
+            <ProtectedRoute requiredRoles={['admin']}>
+              <AdminDashboard />
+            </ProtectedRoute>
+          } 
+        />
+        
+        {/* Station routes */}
+        <Route 
+          path="/station/dashboard" 
+          element={
+            <ProtectedRoute requiredRoles={['station']}>
+              <StationDashboard />
+            </ProtectedRoute>
+          } 
+        />
+        
+        {/* Redirect root to login */}
+        <Route path="/" element={<Navigate to="/login" replace />} />
+        
+        {/* Catch all route */}
+        <Route path="*" element={<NotFoundPage />} />
+      </Routes>
+    </Suspense>
   );
 };
 
